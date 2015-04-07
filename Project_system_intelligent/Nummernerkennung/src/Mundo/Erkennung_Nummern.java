@@ -5,6 +5,7 @@
  */
 package Mundo;
 
+import Agente.Agente;
 import static Utilities.Utilities.generatorBitSetRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +24,14 @@ public class Erkennung_Nummern {
      * @param args the command line arguments
      */
     
+    public static void main(String[] args) {
+        
+        Agente a = new Agente();
+        a.iniciar();
+        
+    }
     
-    
-    public static void main(String[] args) {//10000000
+    public static void main2(String[] args) {//10000000
         byte []bytes= new byte[20];
         Random r=new Random((long) (Math.random()*(new GregorianCalendar()).getTimeInMillis()));
         System.out.println(Arrays.toString(bytes));

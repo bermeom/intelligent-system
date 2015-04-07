@@ -2,21 +2,25 @@ package Tecnicas_IA.AlgoritmosGeneticos;
 
 import Utilities.Utilidades;
 import Utilities.XSRandom;
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 
-/*
- * @author Juan
- */
 public class Regla {
 
     private BitSet condicion;
     private BitSet accion;
     private int fitness;
     private List<Integer> comodines;
+    private int numeroActivaciones = 0;
+    private int numeroAciertos = 0;
+    private List<Regla> reglasPadres;
+    private final boolean imprimirReglasPadre = false;
+    private int generacion = 0;
+    //private Timestamp ultimaActivacion;
 
     public Regla(BitSet condicion, BitSet accion, int fitness, List<Integer> comodines) {
 
@@ -47,16 +51,16 @@ public class Regla {
         this.accion = accion;
         this.fitness = fitness;
         this.comodines = comodines;
+
     }
 
     public BitSet getCondicion() {
         return condicion;
     }
 
-    public void setCondicion(BitSet condicion) {
-        this.condicion = condicion;
-    }
-
+    /*public void setCondicion(BitSet condicion) {
+     this.condicion = condicion;
+     }*/
     public BitSet getAccion() {
         return accion;
     }
@@ -70,6 +74,9 @@ public class Regla {
     }
 
     public void setFitness(int fitness) {
+        if (fitness < 0) {
+            fitness = 0;
+        }
         this.fitness = fitness;
     }
 
@@ -77,16 +84,75 @@ public class Regla {
         return comodines;
     }
 
-    public void setComodines(List<Integer> comodines) {
-        this.comodines = comodines;
+    public int getNumeroActivaciones() {
+        return numeroActivaciones;
     }
+
+    public void setNumeroActivaciones(int numeroActivaciones) {
+        this.numeroActivaciones = numeroActivaciones;
+    }
+
+    public int getNumeroAciertos() {
+        return numeroAciertos;
+    }
+
+    public void setNumeroAciertos(int numeroAciertos) {
+        this.numeroAciertos = numeroAciertos;
+    }
+
+    public int getGeneracion() {
+        return generacion;
+    }
+
+    public void setGeneracion(int generacion) {
+        this.generacion = generacion;
+    }
+    
+    public void incrementarGeneracion() {
+        this.generacion++;
+    }
+    
+    public void sumarActivacion() {
+        this.numeroActivaciones++;
+    }
+
+    public void sumarAciertos() {
+        this.numeroAciertos++;
+    }
+
+    public float getEspecificidad(int longitudCromosoma) {
+        if (this.comodines == null) {
+            return 1;
+        } else {
+            return (float) (longitudCromosoma - this.comodines.size()) / longitudCromosoma;
+        }
+    }
+
+    public List<Regla> getReglasPadres() {
+        return reglasPadres;
+    }
+
+    public void setReglasPadres(List<Regla> reglas) {
+        this.reglasPadres = reglas;
+    }
+    /*public void setComodines(List<Integer> comodines) {
+     this.comodines = comodines;
+     }*/
 
     public String toDebugString() {
         return toDebugString(-1, -1);
     }
 
+    
     public String toDebugString(int tamañoCondicion, int tamañoAccion) {
-        String f = "C: %s  A: %s  F: %s  #: %s";
+        return toDebugString(tamañoCondicion, tamañoAccion,true);
+    }
+    
+    private String toDebugString(int tamañoCondicion, int tamañoAccion, boolean imprimirReglasPadre) {
+        String f = "C: %s  A: %s  F: %s  #: %s  |  NumAct: %s  NumAciert: %s  Generación: %s  ";
+        if (this.imprimirReglasPadre) {
+            f += "  |  Padres: %s";
+        }
 
         String sC = Regla.toDebugString(this.condicion);
 
@@ -118,10 +184,31 @@ public class Regla {
         if (this.comodines != null) {
             sComodines = this.comodines.size();
         }
+        
+        String rPadres = "";
+        if (this.imprimirReglasPadre) {
+            
+            if (this.reglasPadres != null) {
+                for (Regla r : this.reglasPadres) {
+                    rPadres += r.toDebugString(tamañoCondicion, tamañoAccion, false);
+                }
+            }
+        }
 
-        return String.format(f, sC, sA, this.fitness, sComodines);
+        return String.format(f, sC, sA, this.fitness, sComodines, this.numeroActivaciones, this.numeroAciertos, this.generacion ,rPadres);
     }
 
+    /*public static String toDebugString(BitSet b) {
+     String s = "";
+     long[] ab = b.toLongArray();
+     if (ab != null && ab.length > 0) {
+     for (int i = ab.length - 1; i >= 0; i--) {
+     //s += Long.toString(ab[i], 2);
+     s += Long.toBinaryString(ab[i]);
+     }
+     }
+     return s;
+     }*/
     public static String toDebugString(BitSet b) {
         int size = b.size();
         char[] buf = new char[size];

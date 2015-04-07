@@ -1,9 +1,13 @@
 package Utilities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,5 +84,40 @@ public final class Utilidades {
             }
         }
         return lc;
+    }
+
+    public int contarLineasEnArchivo(final String filePath) {
+
+        if (filePath != null) {
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader(new File(filePath)));
+                int lineNumber = 0;
+
+                String data = null;
+                do {
+                    data = reader.readLine();
+                    if (data != null) {
+                        lineNumber++;
+                    }
+                } while (data != null);
+                return lineNumber;
+            } catch (Exception e) {
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static String esperarEntradaDeTeclado() {
+        Scanner s = new Scanner(System.in);
+        return s.next();
     }
 }

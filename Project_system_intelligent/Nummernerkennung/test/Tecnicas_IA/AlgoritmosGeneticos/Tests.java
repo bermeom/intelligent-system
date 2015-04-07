@@ -191,35 +191,32 @@ public class Tests {
         Regla r1 = Regla.crearReglaAleatoria(4);
         Regla r2 = Regla.crearReglaAleatoria(4);
 
-        Regla[] vr = LCS.recombinarReglas(r1, r2, 4);
+        List<Regla> vr = LCS.recombinarReglas(r1, r2, 4);
 
-/*
-        System.out.println(Regla.toDebugString(r1.getCondicion()));
-        System.out.println(Regla.toDebugString(r2.getCondicion()));
-        System.out.println(Regla.toDebugString(vr[0].getCondicion()));
-        System.out.println(Regla.toDebugString(vr[1].getCondicion()));
-        System.out.println("");
-        System.out.println(r1.toDebugString());
-        System.out.println(r2.toDebugString());
-        System.out.println(vr[0].toDebugString());
-        System.out.println(vr[1].toDebugString());
-*/
-
+        /*
+         System.out.println(Regla.toDebugString(r1.getCondicion()));
+         System.out.println(Regla.toDebugString(r2.getCondicion()));
+         System.out.println(Regla.toDebugString(vr.get(0).getCondicion()));
+         System.out.println(Regla.toDebugString(vr.get(1).getCondicion()));
+         System.out.println("");
+         System.out.println(r1.toDebugString());
+         System.out.println(r2.toDebugString());
+         System.out.println(vr.get(0).toDebugString());
+         System.out.println(vr.get(1).toDebugString());
+         */
     }
-    
+
     @Test
-    public void testMutacion()
-    {
+    public void testMutacion() {
         int longitudRegla = 1024;
         Regla r1 = Regla.crearReglaAleatoria(longitudRegla);
         Regla rn = LCS.mutarRegla(r1, longitudRegla);
         System.out.println(r1.toDebugString());
         System.out.println(rn.toDebugString());
     }
-    
+
     @Test
-    public void testSeleccionPorRuleta()
-    {
+    public void testSeleccionPorRuleta() {
         int tamaño = 8;
         List<Regla> listaReglas = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -227,13 +224,60 @@ public class Tests {
             listaReglas.add(r1);
         }
         List<Regla> reglasRuleta = LCS.seleccionarReglasPorRuleta(listaReglas, 2);
-        
+
         for (Regla r : reglasRuleta) {
             System.out.println(r.toDebugString());
         }
-        
-        
-        
     }
 
+    @Test
+    public void testSeleccionPorApuestas() {
+        List<Regla> lista = new ArrayList();
+        BitSet accion = Regla.crearBitSetAleatorio(4);
+        List<Integer> comodines = new ArrayList();
+        for (int i = 0; i < 3; i++) {
+            Regla r1 = null;
+            comodines = new ArrayList();
+            if (i == 0) {
+                comodines = null;
+                r1 = new Regla(Regla.crearBitsetDesdeString("01001"), accion, 51, comodines);
+            }
+            if (i == 1) {
+                comodines.add(0);
+                comodines.add(3);
+                r1 = new Regla(Regla.crearBitsetDesdeString("10110"), accion, 77, comodines);
+            }
+            if (i == 2) {
+                comodines.add(2);
+                comodines.add(3);
+                comodines.add(4);
+                r1 = new Regla(Regla.crearBitsetDesdeString("00010"), accion, 98, comodines);
+            }
+            lista.add(r1);
+            System.out.println(r1.toDebugString());
+        }
+
+        Regla r = LCS.SeleccionarReglaPorApuestas(lista, 0.5f, 5);
+        System.out.println(r.toDebugString());
+    }
+
+    @Test
+    public void testImprimirMatriz() {
+        int n = 3;
+        int[][] matrix = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
+        };
+        
+        matrix[0][1] = 100;
+        
+        for (int i = 0; i < matrix.length; i++) {
+            int[] fila = matrix[i];
+            for (int j = 0; j < fila.length; j++) {
+                System.out.print(fila[j] + "\t ");
+            }
+            System.out.print("\n");
+        }
+    }
 }
